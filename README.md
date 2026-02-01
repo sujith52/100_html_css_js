@@ -5,3 +5,4 @@
 ## --29-01-2026: today goals are to complete the 3hrs in course and also building a project.
 ## --30-01-2026: well istarted learning DSA in javascript so we will continue along with course.
 ## --31-01-2026: well today i have a gen ai hacathon to get a free genAI internship so we will work on that.
+## --01-02-2026: well today i started learning tailwindcss from manu arora, i want to build my portfolio so hurring up things.

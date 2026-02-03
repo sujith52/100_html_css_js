@@ -7,3 +7,4 @@
 ## --31-01-2026: well today i have a gen ai hacathon to get a free genAI internship so we will work on that.
 ## --01-02-2026: well today i started learning tailwindcss from manu arora, i want to build my portfolio so hurring up things.
 ## --02-02-2026: well today we will focus on the taiwind series.
+## --03-02-2026: well today we will be focusing on the server sanitizing in node.js

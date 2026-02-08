@@ -10,3 +10,6 @@
 ## --03-02-2026: well today we will be focusing on the server sanitizing in node.js
 ## --04-02-2026: well today i was working on sql so node js is completed.
 ## --07-02-2026: today learning react fundamentals.
+## --08-02-2026: working on the react static pages, completed the attendance pages and logins
+
+

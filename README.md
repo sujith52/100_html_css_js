@@ -14,3 +14,4 @@
 ## --09-02-2026: working on the react components, worked on tailwind 3 sessions and gained a initial understanding.
 ## --10-02-2026: working on the react journal project.
 ## --11-02-2026: day wasted like because because final year project.
+## --14-02-2026: finally passed m1 examination.

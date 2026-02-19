@@ -19,3 +19,4 @@
 ## --16-02-2026: working on react property or props and built cat react static page.
 ## --17-02-2026: worked on react map functions
 ## --18-02-2026: working on to finish the 1st section of the react
+## --19-02-2026: working on react use state i think so 

@@ -21,3 +21,4 @@
 ## --18-02-2026: working on to finish the 1st section of the react
 ## --19-02-2026: working on react use state i think so 
 ## --20-02-2026: working on  conditional rendering, passing state as a props,  hoping to complete the claude chef project.
+## --21-02-2026: working on useState in react

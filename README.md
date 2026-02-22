@@ -22,3 +22,4 @@
 ## --19-02-2026: working on react use state i think so 
 ## --20-02-2026: working on  conditional rendering, passing state as a props,  hoping to complete the claude chef project.
 ## --21-02-2026: working on useState in react
+## --22-02-2026: thinking about building the portfolio but i dont know spline good enough so after react, next.js we will finish of the spline

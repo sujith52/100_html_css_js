@@ -25,4 +25,5 @@
 ## --22-02-2026: thinking about building the portfolio but i dont know spline good enough so after react, next.js we will finish of the spline
 ## --25-02-2026: working on react so , working on completing the state driven react.
 ## --26-02-2026: well looking to finish that state driven react core module and finishing the claude chef project.
-## --27-002-2026: well completing the final 10 modules of 57 in state driven react.
+## --27-02-2026: well completing the final 10 modules of 57 in state driven react.
+## --28-02-2026: woking on react 

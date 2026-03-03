@@ -27,4 +27,5 @@
 ## --26-02-2026: well looking to finish that state driven react core module and finishing the claude chef project.
 ## --27-02-2026: well completing the final 10 modules of 57 in state driven react.
 ## --28-02-2026: woking on react 
-## --02-02-2026: working on react project
+## --02-03-2026: working on react project
+## --03-03-2026: working on react side effects.

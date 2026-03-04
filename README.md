@@ -29,3 +29,4 @@
 ## --28-02-2026: woking on react 
 ## --02-03-2026: working on react project
 ## --03-03-2026: working on react side effects.
+## --04-03-2026: working on the react side effects and meme generator project man!

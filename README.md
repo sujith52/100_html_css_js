@@ -31,3 +31,4 @@
 ## --03-03-2026: working on react side effects.
 ## --04-03-2026: working on the react side effects and meme generator project man!
 ## --05-03-2026: working on useEffect() and trying to buld a to do list app for the basic understanding man!!
+## --06-03-2026: working on the final meme generator app

@@ -32,3 +32,4 @@
 ## --04-03-2026: working on the react side effects and meme generator project man!
 ## --05-03-2026: working on useEffect() and trying to buld a to do list app for the basic understanding man!!
 ## --06-03-2026: working on the final meme generator app
+## --07-03-2026: working on capstone project 1, tenniz for deeper understanding in react!

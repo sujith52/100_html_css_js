@@ -34,3 +34,4 @@
 ## --06-03-2026: working on the final meme generator app
 ## --07-03-2026: working on capstone project 1, tenniz for deeper understanding in react!
 ## --09-03-2026: working on gasp documentation, learning gasp 
+## --11-03-2026: working on the react to learn the new projects which are basic.

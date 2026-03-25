@@ -35,3 +35,5 @@
 ## --07-03-2026: working on capstone project 1, tenniz for deeper understanding in react!
 ## --09-03-2026: working on gasp documentation, learning gasp 
 ## --11-03-2026: working on the react to learn the new projects which are basic.
+## --12 to 24 -03-2026: well my health was not good so the doctor recommended me to stop seeing screen so took some time 
+## --25-03-2026: working on react project and also final year review!

@@ -1,0 +1,66 @@
+*{
+    margin: 0;
+    padding: 0;
+    
+}
+
+.header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: lightgray;
+    color: black;
+}
+
+.bookform{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px;
+    background-color: lightskyblue;
+}
+.bookform h1{
+    align-items: center;
+
+}
+
+.inpt{
+    height: 20px;
+    width: 200px;
+    text-decoration: none;
+    border: 2px solid lightgray;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.add{
+    height: 30px;
+    width: 100px;
+    border-radius: 10px;
+    background-color: lightgreen;
+    color: black;
+    font-size: x-large;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    
+}
+
+.collection h2{
+    font-size: 25px;
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+}
+
+.collection li{
+    font-size: 30px;
+    font-family: monospace;
+    padding-bottom: 2px;
+    align-items: center;
+    justify-content: center;
+}

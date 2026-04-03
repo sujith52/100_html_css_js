@@ -1,0 +1,15 @@
+[
+  { "id": 1, "name": "Sujith", "power": 99 },
+  { "id": 2, "name": "Sreeja Ice", "power": 90 },
+  { "id": 3, "name": "Lalitha", "power": 90 },
+  { "id": 4, "name": "Yun Ming", "power": 110 },
+  { "id": 5, "name": "Long Yeyue", "power": 99 },
+  { "id": 6, "name": "Ya Li", "power": 98 },
+  { "id": 7, "name": "Qiangu Dongfeng", "power": 105 },
+  { "id": 8, "name": "Leng Yaozhu", "power": 98 },
+  { "id": 9, "name": "Chen Xinjie", "power": 108 },
+  { "id": 10, "name": "Cao Dezhi", "power": 102 },
+  { "id": 11, "name": "Zang Xin", "power": 101 },
+  { "id": 12, "name": "A Ruheng", "power": 97 },
+  { "id": 13, "name": "Guan Yue", "power": 100 }
+]

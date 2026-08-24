@@ -1,0 +1,81 @@
+html,body{
+    margin: 0;
+}
+
+
+
+.header{
+    display: flex;
+    color: white;
+    background-color: red;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 20px;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    font-weight: 500;
+
+}
+
+.header img{
+    width: 24px;
+    
+    border-radius: 50%;
+
+}
+.entry{
+    display: flex;
+    justify-content: center;
+}
+/* this is new components */
+.img-div{
+    width: 125px;
+    height: 168px;
+    overflow: hidden;
+    flex-shrink: 0;
+
+}
+.entry{
+    margin: 50px;
+    gap: 20px;
+    
+}
+.main-img{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+    
+}
+
+
+.mark{
+    display: flex;
+    align-items: center;
+
+
+}
+.mark > img{
+    width: 15px;
+    height: 20px;
+    margin-right: 5px;
+}
+.mark > a{
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.main > h2{
+    margin-top: -2px;
+}
+.date{
+    margin-top: -10px;
+    font-size: 15px;
+    font-weight: bolder;
+}
+.desc{
+    margin-top: -10px;
+}

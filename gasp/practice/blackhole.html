@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gargantua GSAP</title>
+    <style>
+        .box{
+            background-color: green;
+            height: 250px;
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+
+    </div>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+     
+
+        // 1. Animate the noise frequency to make the light "shimmer"
+        gsap.to(".box", {
+            x: 500,
+            rotation: 20,
+            borderradius: 20,
+            
+        });
+
+    </script>
+</body>
+</html>

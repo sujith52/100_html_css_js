@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic API Request Architecture</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b1120;
+            --panel-bg: #1e293b;
+            --client-color: #38bdf8;
+            --node-color: #22c55e;
+            --db-color: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Consolas', 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Main Architecture Canvas */
+        .canvas {
+            position: relative;
+            width: 800px;
+            height: 300px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            border: 1px solid #334155;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 60px;
+            box-sizing: border-box;
+        }
+
+        /* Node Blocks */
+        .node {
+            width: 130px;
+            height: 140px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            position: relative;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .node-icon { font-size: 40px; margin-bottom: 10px; }
+        .node-title { font-size: 14px; font-weight: bold; letter-spacing: 1px; }
+        .node-tech { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+        /* Network Lines */
+        .line {
+            position: absolute;
+            height: 2px;
+            background: #334155;
+            top: 50%;
+            z-index: 1;
+        }
+        .line-1 { left: 190px; width: 150px; }
+        .line-2 { left: 470px; width: 140px; }
+
+        /* Moving Packets */
+        .packet {
+            position: absolute;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            opacity: 0;
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        .req-packet { background: var(--client-color); left: 190px; }
+        .db-packet { background: var(--node-color); left: 470px; }
+        .res-packet { background: var(--db-color); left: 610px; }
+
+        /* Terminal Console */
+        .terminal {
+            width: 800px;
+            height: 150px;
+            background: #000;
+            border-radius: 8px;
+            margin-top: 20px;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid #334155;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .log-time { color: #64748b; }
+        .log-info { color: var(--client-color); }
+        .log-success { color: var(--node-color); }
+        .log-warn { color: #f59e0b; }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        <div class="node" id="client" style="border-color: var(--client-color);">
+            <div class="node-icon">💻</div>
+            <div class="node-title">Client</div>
+            <div class="node-tech">React.js</div>
+        </div>
+
+        <div class="line line-1"></div>
+        <div class="packet req-packet" id="req-packet">{ user: "Sujith" }</div>
+
+        <div class="node" id="server" style="border-color: var(--node-color);">
+            <div class="node-icon">⚙️</div>
+            <div class="node-title">API Server</div>
+            <div class="node-tech">Node / Express</div>
+        </div>
+
+        <div class="line line-2"></div>
+        <div class="packet db-packet" id="db-packet">INSERT</div>
+
+        <div class="node" id="database" style="border-color: var(--db-color);">
+            <div class="node-icon">🗄️</div>
+            <div class="node-title">Database</div>
+            <div class="node-tech">MongoDB</div>
+        </div>
+        
+        <div class="packet res-packet" id="res-packet">201 OK</div>
+    </div>
+
+    <div class="terminal" id="terminal">
+        <div><span class="log-time">[System]</span> <span class="log-info">Animation Engine Initialized...</span></div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        
+        // Helper function to print to our fake terminal
+        function log(message, type = 'info') {
+            const time = new Date().toISOString().split('T')[1].substring(0, 8);
+            const colorClass = type === 'success' ? 'log-success' : type === 'warn' ? 'log-warn' : 'log-info';
+            terminal.innerHTML += `<div><span class="log-time">[${time}]</span> <span class="${colorClass}">${message}</span></div>`;
+            terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to bottom
+        }
+
+        // The Master GSAP Timeline
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
+
+        // Phase 1: Client sends POST request to Node.js
+        tl.call(() => log('Client: Preparing POST /api/users request...', 'info'))
+          .to("#client", { scale: 1.05, boxShadow: "0 0 20px #38bdf8", duration: 0.3, yoyo: true, repeat: 1 })
+          .set("#req-packet", { opacity: 1, left: "190px", textContent: "{ user: 'NewUser' }" })
+          .to("#req-packet", { left: "330px", duration: 1.2, ease: "power1.inOut" })
+          .call(() => log('Network: Payload crossing internet gateway...', 'warn'), null, "-=0.6")
+
+        // Phase 2: Node.js receives and processes
+          .set("#req-packet", { opacity: 0 })
+          .call(() => log('Express: Request received. Parsing body...', 'info'))
+          .to("#server", { scale: 1.05, boxShadow: "0 0 20px #22c55e", duration: 0.3, yoyo: true, repeat: 1 })
+          
+        // Phase 3: Node.js queries MongoDB
+          .call(() => log('Mongoose: Executing db.users.insertOne()...', 'warn'))
+          .set("#db-packet", { opacity: 1, left: "470px", background: "#22c55e", textContent: "INSERT" })
+          .to("#db-packet", { left: "610px", duration: 1, ease: "power1.inOut" })
+          
+        // Phase 4: MongoDB saves and responds
+          .set("#db-packet", { opacity: 0 })
+          .call(() => log('MongoDB: Write successful. Generating ObjectId.', 'success'))
+          .to("#database", { scale: 1.05, boxShadow: "0 0 20px #f43f5e", duration: 0.4, yoyo: true, repeat: 1 })
+          
+          .call(() => log('MongoDB: Returning confirmation to Node.', 'info'))
+          .set("#res-packet", { opacity: 1, left: "610px", background: "#f43f5e", textContent: "{ _id: '5f8a...' }" })
+          .to("#res-packet", { left: "470px", duration: 1, ease: "power1.inOut" })
+
+        // Phase 5: Node.js sends HTTP Response back to Client
+          .set("#res-packet", { opacity: 0 })
+          .call(() => log('Express: Sending HTTP 201 Created to Client.', 'success'))
+          .to("#server", { scale: 1.05, boxShadow: "0 0 20px #22c55e", duration: 0.2, yoyo: true, repeat: 1 })
+          
+          .set("#req-packet", { opacity: 1, left: "330px", background: "#22c55e", textContent: "HTTP 201 Created" })
+          .to("#req-packet", { left: "190px", duration: 1.2, ease: "power1.inOut" })
+          
+        // Phase 6: Client resolves promise
+          .set("#req-packet", { opacity: 0 })
+          .call(() => log('Client: Promise resolved. UI Updated.', 'success'))
+          .to("#client", { scale: 1.05, boxShadow: "0 0 20px #38bdf8", duration: 0.3, yoyo: true, repeat: 1 })
+          
+          .call(() => terminal.innerHTML += `<br><div><span class="log-time">--- Session Closed. Restarting ---</span></div><br>`);
+
+    </script>
+</body>
+</html>

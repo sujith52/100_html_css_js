@@ -1,0 +1,13 @@
+{
+  "name": "from-other-side",
+  "version": "1.0.0",
+  "description": "a platform for sharing the gosst encounters ",
+  "license": "ISC",
+  "author": "sujith52",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WishListz_Rolling_Log</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            @page { size: landscape; margin: 0.5cm; }
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .main-container { width: 100% !important; max-width: 100% !important; border: 1px solid #000; }
+        }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th, td { border: 1px solid #000; text-align: center; padding: 4px 0; }
+        th { background-color: #f8fafc; font-size: 10px; font-weight: 800; }
+        td { font-size: 11px; font-weight: 700; height: 35px; }
+        .weekend { background-color: #f1f5f9; }
+        .status-p { color: #16a34a; }
+        .status-a { color: #dc2626; }
+        .status-n { color: #94a3b8; font-style: italic; }
+        .status-y { color: #2563eb; font-weight: 900; }
+    </style>
+</head>
+<body class="bg-gray-100 p-2">
+
+    <div class="max-w-[99%] mx-auto bg-white p-6 border border-gray-400 main-container">
+        
+        <div class="flex justify-between items-center border-b-2 border-black pb-4 mb-4">
+            <div class="space-y-1">
+                <p><strong>Name:</strong> <span>Gavathakatla Sujith Kumar</span></p>
+                <p><strong>Roll NO:</strong> <span>IN226013502</span></p>
+                <p><strong>Course:</strong> <span>MERN-Stack Development</span></p>
+                <p><strong>Team Lead:</strong> <span>Vinay Kumar</span></p>
+            </div>
+            
+            <div class="text-center">
+                <h1 class="text-4xl font-black italic tracking-tighter">WISH<span class="text-blue-600">LISTZ</span></h1>
+                <p class="font-bold uppercase text-[10px] tracking-[0.3em] text-gray-500">Last 30 Days Attendance Report</p>
+            </div>
+
+            <div class="text-right">
+                <h2 class="text-3xl font-black italic">2026</h2>
+                <p class="text-xs font-bold bg-black text-white px-2 py-1 rounded inline-block" id="liveClock">00:00:00</p>
+            </div>
+        </div>
+
+        <div class="w-full">
+            <table>
+                <thead>
+                    <tr id="monthHeader"></tr>
+                    <tr id="dateHeader"></tr>
+                    <tr id="dayHeader"></tr>
+                </thead>
+                <tbody>
+                    <tr id="statusRow"></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+            <div class="text-[9px] font-black uppercase text-gray-400">
+                P: Present | A: Absent | N: None 
+            </div>
+
+            <div class="flex items-center gap-6">
+                <div class="text-right">
+                    <p class="text-[10px] font-black uppercase text-gray-500">Attendance Accuracy</p>
+                    <h2 class="text-5xl font-black text-blue-700" id="percentResult">0%</h2>
+                </div>
+                <button onclick="window.print()" class="no-print bg-black text-white px-10 py-4 font-bold rounded hover:bg-gray-800 transition shadow-lg">
+                    PRINT 30-DAY LOG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        // --- DATA ARRAY (Last 30 entries ending on Feb 12) ---
+        // I've added some 'P' and 'A' values here for you
+        const attendanceData = [
+            'N','N','P','P','N',
+            'P','P','P','P','P',
+            'P','N','N','P','P',
+            'P','A','P','N','P',
+            'P','P','A','P','P',
+            'N','P','A','A','N'
+        ];
+
+        function updateClock() {
+            document.getElementById('liveClock').innerText = new Date().toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+
+        function buildRollingTable() {
+            const dateRow = document.getElementById('dateHeader');
+            const dayRow = document.getElementById('dayHeader');
+            const statusRow = document.getElementById('statusRow');
+            const monthRow = document.getElementById('monthHeader');
+
+            const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+            const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+            let mHtml = '', dHtml = '', nHtml = '', sHtml = '';
+            let pCount = 0;
+
+            // --- FORCE THE END DATE TO FEB 12, 2026 ---
+            let targetDate = new Date(2026, 1, 12); // Month is 0-indexed, so 1 = Feb
+
+            for (let i = 29; i >= 0; i--) {
+                let d = new Date(targetDate); 
+                d.setDate(targetDate.getDate() - i); // Go back i days from Feb 12
+
+                const dateNum = d.getDate().toString().padStart(2, '0');
+                const dayName = dayNames[d.getDay()];
+                const monthName = monthNames[d.getMonth()];
+                const isWeekend = (dayName === 'SUN' || dayName === 'SAT');
+                
+                // Get data from array
+                const status = attendanceData[29 - i] || 'N';
+                const statusClass = `status-${status.toLowerCase()}`;
+                const bgClass = isWeekend ? 'weekend' : '';
+
+                mHtml += `<th class="${bgClass} text-[8px] border-b-0">${monthName}</th>`;
+                dHtml += `<th class="${bgClass} border-t-0">${dateNum}</th>`;
+                nHtml += `<th class="${bgClass}">${dayName}</th>`;
+                sHtml += `<td class="${bgClass} ${statusClass}">${status}</td>`;
+
+                if (status === 'P') pCount++;
+            }
+
+            // Final Percentage calculation
+            const finalPercent = Math.round((pCount / 30) * 100);
+            
+            mHtml += `<th class="bg-blue-600 text-white border-none">30D</th>`;
+            dHtml += `<th class="bg-blue-600 text-white border-none">TOTAL</th>`;
+            nHtml += `<th class="bg-blue-600 text-white border-none">%</th>`;
+            sHtml += `<td class="bg-blue-50 text-blue-700 font-black border-2 border-blue-600">${finalPercent}%</td>`;
+
+            monthRow.innerHTML = mHtml;
+            dateRow.innerHTML = dHtml;
+            dayRow.innerHTML = nHtml;
+            statusRow.innerHTML = sHtml;
+            document.getElementById('percentResult').innerText = finalPercent + "%";
+        }
+
+        window.onload = () => { updateClock(); buildRollingTable(); };
+    </script>
+</body>
+</html>

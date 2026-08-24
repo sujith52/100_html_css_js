@@ -1,0 +1,26 @@
+*{
+    margin: 0;
+    border: 0;
+    padding: 0;
+   
+}
+.full{
+    display: flex;
+    flex-direction: row;
+}
+
+.first{
+    background-color: aqua;
+    width: 20%;
+    height: 730px;
+}
+.second{
+    width: 60%;
+    background-image: url("jj-ying-8bghKxNU1j0-unsplash.jpg");
+    background-size: cover;
+}
+
+.third{
+    background-color: blue;
+    width: 20%;
+}

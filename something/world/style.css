@@ -1,0 +1,13 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.main-head{
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 100;
+}
+.head-main{
+    color: #519cc8;
+}

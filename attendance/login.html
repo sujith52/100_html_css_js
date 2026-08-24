@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WishListz | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #02040a; }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .neon-input {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .neon-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+            outline: none;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 15px rgba(99, 102, 241, 0.7);
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex items-center justify-center overflow-hidden">
+
+    <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/20 rounded-full blur-[120px] -z-10"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px] -z-10"></div>
+
+    <div class="w-full max-w-lg px-6">
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-black tracking-tighter text-white italic uppercase">
+                Wish<span class="text-indigo-500 text-glow">Listz</span>
+            </h1>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.3em] mt-3">Identity Verification</p>
+        </div>
+
+        <div class="glass-panel p-10 md:p-12 rounded-[3rem]">
+            <form id="loginForm" class="space-y-8">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Username</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-5 top-5 text-slate-600"></i>
+                        <input type="text" id="username" required
+                            class="w-full neon-input pl-14 pr-6 py-5 rounded-2xl text-white placeholder:text-slate-700 font-bold"
+                            placeholder="Enter username...">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Secret Key</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-5 top-5 text-slate-600"></i>
+                        <input type="password" id="password" required
+                            class="w-full neon-input pl-14 pr-6 py-5 rounded-2xl text-white placeholder:text-slate-700 font-bold"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="hidden animate-bounce text-center">
+                    <span class="bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold px-4 py-2 rounded-full">
+                        Access Denied: Invalid Credentials
+                    </span>
+                </div>
+
+                <button type="submit" 
+                    class="w-full btn-gradient text-white py-5 rounded-2xl font-black text-xl hover:scale-[1.02] transition-all active:scale-95">
+                    AUTHENTICATE
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <a href="index.html" class="text-slate-600 text-xs font-bold uppercase tracking-widest hover:text-indigo-400 transition">
+                    <i class="fas fa-arrow-left mr-2"></i> Return to Home
+                </a>
+            </div>
+        </div>
+        
+        <p class="text-center mt-10 text-slate-700 text-[10px] font-bold uppercase tracking-widest">
+            Protected by WishListz Core Engine v2.0
+        </p>
+    </div>
+
+    <script>
+        // --- LOCAL DATA STORE ---
+        const users = [
+            { id: 1, name: "Master Admin", username: "admin9663", password: "123", role: "admin" },
+            { id: 2, name: "Regular User", username: "user9663", password: "123", role: "user" },
+            { id: 2, name: "Regular User", username: "sujith1368", password: "96639663", role: "user" }
+        ];
+
+        // --- LOGIN LOGIC ---
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const userVal = document.getElementById('username').value;
+            const passVal = document.getElementById('password').value;
+            const errorBox = document.getElementById('errorMessage');
+
+            const authenticatedUser = users.find(u => u.username === userVal && u.password === passVal);
+
+            if (authenticatedUser) {
+                // Save user to LocalStorage
+                localStorage.setItem('wishlistz_user', JSON.stringify(authenticatedUser));
+                
+                // Visual feedback before redirect
+                const btn = e.target.querySelector('button');
+                btn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i> VERIFYING...';
+                btn.style.opacity = "0.7";
+
+                setTimeout(() => {
+                    if (authenticatedUser.role === 'admin') {
+                        window.location.href = 'admin_dashboard.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 1000);
+            } else {
+                errorBox.classList.remove('hidden');
+                setTimeout(() => errorBox.classList.add('hidden'), 3000);
+            }
+        });
+    </script>
+</body>
+</html>

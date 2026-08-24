@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React State Explained • Animade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e2e8f0;
+        }
+        .title-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .state-number {
+            font-size: 6rem;
+            line-height: 1;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-4xl w-full">
+
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 bg-white/10 px-5 py-2 rounded-full text-sm mb-4">
+                <span class="text-blue-400">●</span>
+                REACT STATE
+            </div>
+            <h1 class="text-6xl md:text-7xl font-bold title-font leading-none mb-4">
+                How <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">useState</span> Works
+            </h1>
+            <p class="text-gray-400 text-xl max-w-md mx-auto">
+                Click the button and watch what happens behind the scenes
+            </p>
+        </div>
+
+        <div class="glass rounded-3xl p-10 md:p-16">
+
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+
+                <!-- Visual State Area -->
+                <div class="text-center">
+                    <div class="mb-8">
+                        <div class="text-sm text-gray-500 mb-3 tracking-widest">CURRENT STATE</div>
+                        <div id="count" 
+                             class="state-number text-white transition-all duration-500">
+                            0
+                        </div>
+                    </div>
+
+                    <div id="status" 
+                         class="inline-block px-6 py-3 bg-emerald-500/10 text-emerald-400 rounded-2xl text-sm font-medium opacity-0">
+                        State Updated • Re-render Triggered
+                    </div>
+                </div>
+
+                <!-- Controls & Info -->
+                <div class="space-y-8">
+                    <button onclick="updateState()" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
+                                   py-6 rounded-2xl text-xl font-semibold transition-all active:scale-95 shadow-xl shadow-purple-500/30">
+                        Increment State
+                    </button>
+
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-semibold mb-4 text-lg text-blue-400">What Just Happened?</h3>
+                        <div id="explanation" class="text-gray-300 leading-relaxed text-[15px]">
+                            Click the button to see React state in action.
+                        </div>
+                    </div>
+
+                    <!-- Simple Steps -->
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-start">
+                            <div class="w-6 h-6 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs font-bold mt-0.5">1</div>
+                            <div class="text-sm">
+                                <span class="font-medium">setState()</span> is called
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-6 h-6 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-bold mt-0.5">2</div>
+                            <div class="text-sm">
+                                React schedules a re-render
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold mt-0.5">3</div>
+                            <div class="text-sm">
+                                Component re-renders with new state
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Info -->
+        <div class="mt-12 text-center text-sm text-gray-500">
+            State updates are <span class="text-emerald-400">asynchronous</span> and <span class="text-emerald-400">immutable</span>.<br>
+            React intelligently decides when and what to re-render.
+        </div>
+
+    </div>
+
+    <script>
+        let count = 0;
+        const countEl = document.getElementById('count');
+        const statusEl = document.getElementById('status');
+        const explanationEl = document.getElementById('explanation');
+
+        function updateState() {
+            count++;
+
+            // Animate the number
+            gsap.to(countEl, {
+                innerText: count,
+                duration: 0.6,
+                ease: "power2.out",
+                onUpdate: function() {
+                    countEl.textContent = Math.floor(this.targets()[0].innerText);
+                }
+            });
+
+            // Quick flash animation
+            gsap.fromTo(countEl, 
+                { scale: 0.85, color: "#67e8f9" },
+                { scale: 1, color: "#ffffff", duration: 0.5, ease: "back.out(2)" }
+            );
+
+            // Show status
+            statusEl.classList.remove('opacity-0');
+            gsap.fromTo(statusEl, 
+                { y: 10, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.4 }
+            );
+
+            // Hide status after 2 seconds
+            setTimeout(() => {
+                gsap.to(statusEl, { opacity: 0, duration: 0.5 });
+            }, 2000);
+
+            // Update explanation
+            const messages = [
+                "React received a state update request.",
+                "The component is now marked for re-rendering.",
+                "New state value is applied during the render phase.",
+                "React updates the DOM with the new value."
+            ];
+
+            explanationEl.textContent = messages[(count - 1) % messages.length];
+        }
+
+        // Initialize with a gentle entrance
+        window.onload = () => {
+            gsap.from(countEl, {
+                scale: 0.5,
+                opacity: 0,
+                duration: 1,
+                ease: "back.out(1.5)"
+            });
+        };
+    </script>
+</body>
+</html>

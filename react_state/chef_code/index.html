@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" src="https://github.com/scrimba/learn-fullstack-development/blob/main/15.%20React.js%20Fundamentals/04.%20React%20State/02.%20Chef%20Claude%20Header/images/chef-claude-icon.png?raw=true">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>react claude chef bro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/react-markdown@9.0.1/react-markdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel" src="components/header.jsx"></script>
+    <script type="text/babel" src="components/main.jsx"></script>
+    <script type="text/babel" src="components/Placeholder.jsx"></script>
+    <script type="text/babel" src="components/Ingredientslist.jsx"></script>
+    
+    <script type="module" src="ai.js"></script>
+    <script type="text/babel" src="app.jsx"></script>
+    <script type="text/babel" src="index.jsx"></script>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai@0.21.0"
+        }
+    }
+    </script>
+</body>
+</html>

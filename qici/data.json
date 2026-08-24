@@ -1,0 +1,229 @@
+{
+  "topics": [
+    {
+      "id": 1,
+      "slug": "useeffect-deep-dive",
+      "title": "useEffect Deep Dive",
+      "category": "Hooks",
+      "difficulty": "Intermediate",
+      "estimatedTime": "15 min",
+      "description": "Master the useEffect hook by visually understanding when it runs, how dependency arrays work, and the cleanup function.",
+      
+      "overview": {
+        "what": "useEffect lets you perform side effects in function components. It replaces lifecycle methods like componentDidMount, componentDidUpdate, and componentWillUnmount.",
+        "when": "Runs after every render by default. You can control it using the dependency array.",
+        "why": "Helps you synchronize your React component with external systems (API calls, subscriptions, DOM manipulation, etc.)"
+      },
+
+      "keyConcepts": [
+        {
+          "title": "No Dependency Array",
+          "description": "Effect runs after every render"
+        },
+        {
+          "title": "Empty Dependency Array []",
+          "description": "Effect runs only once after initial render (like componentDidMount)"
+        },
+        {
+          "title": "With Dependencies [count]",
+          "description": "Effect runs when any value in the array changes"
+        }
+      ],
+
+      "diagram": {
+        "title": "How useEffect Works Internally",
+        "description": "Step-by-step flow of the useEffect lifecycle",
+        "steps": [
+          {
+            "step": 1,
+            "title": "Component Renders",
+            "description": "React renders the component and commits it to the DOM",
+            "color": "#60a5fa"
+          },
+          {
+            "step": 2,
+            "title": "Check Dependencies",
+            "description": "Compares current vs previous values using Object.is()",
+            "color": "#c084fc"
+          },
+          {
+            "step": 3,
+            "title": "Run Cleanup",
+            "description": "If previous effect exists, run its cleanup function",
+            "color": "#f472b6"
+          },
+          {
+            "step": 4,
+            "title": "Execute Effect",
+            "description": "Run the new effect function",
+            "color": "#34d399"
+          }
+        ]
+      },
+
+      "interactiveDemo": {
+        "title": "Try it Yourself",
+        "code": "useEffect(() => {\n  console.log('Effect ran!');\n\n  return () => {\n    console.log('Cleanup');\n  };\n}, [count]);",
+        "explanation": "Click the button below to change 'count' and watch how the effect behaves."
+      },
+
+      "commonMistakes": [
+        "Forgetting to include all dependencies in the array (causing stale closures)",
+        "Causing infinite loops by updating state inside useEffect without proper dependencies",
+        "Not returning a cleanup function for subscriptions or timers"
+      ],
+
+      "proTip": "Always run ESLint with the react-hooks/exhaustive-deps rule enabled. It will warn you about missing dependencies."
+    },
+    {
+      "id": 2,
+      "slug": "usestate-and-batching",
+      "title": "useState & Automatic Batching",
+      "category": "Hooks",
+      "difficulty": "Beginner",
+      "estimatedTime": "12 min",
+      "description": "Understand how useState works internally and why React 18+ automatically batches state updates for better performance.",
+      
+      "overview": {
+        "what": "useState is the most fundamental hook that lets you add state to functional components.",
+        "when": "Use it whenever you need to store and update data that affects what is rendered.",
+        "why": "It triggers re-renders when state changes and React 18+ batches multiple updates to avoid unnecessary renders."
+      },
+
+      "keyConcepts": [
+        {
+          "title": "State Initialization",
+          "description": "useState returns current state and a setter function"
+        },
+        {
+          "title": "Automatic Batching",
+          "description": "Multiple setState calls in one event are batched into one render"
+        },
+        {
+          "title": "Functional Updates",
+          "description": "Use callback form when new state depends on previous state"
+        }
+      ],
+
+      "diagram": {
+        "title": "How useState & Batching Works",
+        "description": "State update flow and automatic batching in React 18+",
+        "steps": [
+          {
+            "step": 1,
+            "title": "State Update Called",
+            "description": "setCount() or similar setter is triggered",
+            "color": "#60a5fa"
+          },
+          {
+            "step": 2,
+            "title": "Update Queued",
+            "description": "React queues the update instead of re-rendering immediately",
+            "color": "#c084fc"
+          },
+          {
+            "step": 3,
+            "title": "Automatic Batching",
+            "description": "Multiple updates are grouped together",
+            "color": "#f472b6"
+          },
+          {
+            "step": 4,
+            "title": "Single Re-render",
+            "description": "One final render with all batched updates applied",
+            "color": "#34d399"
+          }
+        ]
+      },
+
+      "interactiveDemo": {
+        "title": "Try Batching Demo",
+        "code": "const [count, setCount] = useState(0);\n\n// Multiple updates in one click\ngoose() {\n  setCount(c => c + 1);\n  setCount(c => c + 1);\n  setCount(c => c + 1);\n}",
+        "explanation": "Click the button to see how multiple state updates are batched into one re-render."
+      },
+
+      "commonMistakes": [
+        "Using the current state value directly instead of functional updater",
+        "Expecting immediate state update after setState",
+        "Not understanding that state updates are asynchronous"
+      ],
+
+      "proTip": "Always use the functional form (setCount(prev => prev + 1)) when the new state depends on the previous one."
+    },
+    {
+      "id": 3,
+      "slug": "usememo-and-usecallback",
+      "title": "useMemo & useCallback",
+      "category": "Performance",
+      "difficulty": "Intermediate",
+      "estimatedTime": "18 min",
+      "description": "Learn when and why to use useMemo and useCallback to prevent unnecessary re-renders and expensive calculations.",
+      
+      "overview": {
+        "what": "useMemo caches expensive calculations. useCallback caches function references.",
+        "when": "Use them when passing values or functions to child components that use React.memo.",
+        "why": "Prevents child components from re-rendering unnecessarily when parent re-renders."
+      },
+
+      "keyConcepts": [
+        {
+          "title": "useMemo",
+          "description": "Memoizes the result of expensive computations"
+        },
+        {
+          "title": "useCallback",
+          "description": "Memoizes function definitions to keep stable references"
+        },
+        {
+          "title": "Dependency Arrays",
+          "description": "Both hooks rely on correct dependency arrays"
+        }
+      ],
+
+      "diagram": {
+        "title": "How useMemo & useCallback Work",
+        "description": "Caching mechanism to optimize React performance",
+        "steps": [
+          {
+            "step": 1,
+            "title": "Parent Re-renders",
+            "description": "Parent component re-renders due to state change",
+            "color": "#60a5fa"
+          },
+          {
+            "step": 2,
+            "title": "Dependency Check",
+            "description": "useMemo/useCallback checks if dependencies changed",
+            "color": "#c084fc"
+          },
+          {
+            "step": 3,
+            "title": "Return Cached Value",
+            "description": "If dependencies same → return cached result/function",
+            "color": "#f472b6"
+          },
+          {
+            "step": 4,
+            "title": "Child Stays Stable",
+            "description": "Child component does not re-render unnecessarily",
+            "color": "#34d399"
+          }
+        ]
+      },
+
+      "interactiveDemo": {
+        "title": "Try Performance Optimization",
+        "code": "const expensiveValue = useMemo(() => {\n  return heavyCalculation(count);\n}, [count]);\n\nconst handleClick = useCallback(() => {\n  console.log('Clicked');\n}, []);",
+        "explanation": "See how useMemo and useCallback prevent unnecessary recalculations and re-renders."
+      },
+
+      "commonMistakes": [
+        "Overusing useMemo/useCallback and hurting performance",
+        "Forgetting to add dependencies to the array",
+        "Using them on simple values that don't need memoization"
+      ],
+
+      "proTip": "Only use useMemo and useCallback when you have a measurable performance issue or when passing props to memoized child components."
+    }
+  ]
+}

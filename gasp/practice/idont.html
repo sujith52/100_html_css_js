@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Fraud Detection Pipeline</title>
+    <style>
+        body { margin: 0; background: #020617; color: white; font-family: sans-serif; overflow: hidden; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+        .ui-overlay {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+            width: 100%;
+        }
+        h1 { font-size: 2.5rem; color: #38bdf8; margin: 0; text-transform: uppercase; letter-spacing: 4px; }
+        p { font-size: 1.2rem; opacity: 0.8; }
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div class="ui-overlay">
+        <h1 id="step-title">Initializing Pipeline</h1>
+        <p id="step-desc">Loading ML Environment...</p>
+    </div>
+
+    <div class="controls">Auto-Cycling Pipeline Steps</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        // 1. Setup Scene
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // 2. Create Content (The Pipeline Stages as 3D Objects)
+        const stages = [
+            { title: "Data Collection", desc: "Loading Transaction Dataset", color: 0x38bdf8 },
+            { title: "Preprocessing", desc: "Cleaning, Encoding & Scaling", color: 0x818cf8 },
+            { title: "SMOTE", desc: "Balancing Fraud vs Non-Fraud", color: 0xf472b6 },
+            { title: "Model Training", desc: "XGBoost, Random Forest & LightGBM", color: 0x2dd4bf },
+            { title: "SHAP Analysis", desc: "Explainable AI & Final Prediction", color: 0xfbbf24 }
+        ];
+
+        const stageObjects = [];
+        const group = new THREE.Group();
+
+        stages.forEach((stage, i) => {
+            // Create a glowing ring for each stage
+            const geometry = new THREE.TorusGeometry(5, 0.05, 16, 100);
+            const material = new THREE.MeshBasicMaterial({ color: stage.color });
+            const ring = new THREE.Mesh(geometry, material);
+            
+            // Space them out along the Z axis
+            ring.position.z = -i * 20;
+            
+            // Add some "particles" around each ring
+            const pGeom = new THREE.BufferGeometry();
+            const pCount = 200;
+            const coords = new Float32Array(pCount * 3);
+            for(let j=0; j<pCount*3; j++) coords[j] = (Math.random() - 0.5) * 15;
+            pGeom.setAttribute('position', new THREE.BufferAttribute(coords, 3));
+            const pMat = new THREE.PointsMaterial({ color: stage.color, size: 0.05 });
+            const particles = new THREE.Points(pGeom, pMat);
+            particles.position.z = -i * 20;
+
+            group.add(ring, particles);
+            stageObjects.push(ring);
+        });
+
+        scene.add(group);
+
+        // 3. Add a "Starfield" background
+        const starGeo = new THREE.BufferGeometry();
+        const starCoords = new Float32Array(3000 * 3);
+        for(let i=0; i<9000; i++) starCoords[i] = (Math.random() - 0.5) * 200;
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starCoords, 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.1}));
+        scene.add(stars);
+
+        // 4. Animation Logic
+        let currentStage = 0;
+        const titleEl = document.getElementById('step-title');
+        const descEl = document.getElementById('step-desc');
+
+        function updatePipeline() {
+            const data = stages[currentStage];
+            
+            // Animate Camera to the next ring
+            gsap.to(camera.position, {
+                z: (-currentStage * 20) + 5, // Stop just in front of the ring
+                duration: 2,
+                ease: "power2.inOut"
+            });
+
+            // UI Text update with fade
+            gsap.to(".ui-overlay", { opacity: 0, duration: 0.5, onComplete: () => {
+                titleEl.innerText = data.title;
+                descEl.innerText = data.desc;
+                titleEl.style.color = `#${data.color.toString(16)}`;
+                gsap.to(".ui-overlay", { opacity: 1, duration: 0.5 });
+            }});
+
+            currentStage = (currentStage + 1) % stages.length;
+        }
+
+        // Start cycling
+        setInterval(updatePipeline, 4000);
+        updatePipeline();
+
+        // 5. Render Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate rings slightly
+            group.children.forEach(obj => {
+                if(obj instanceof THREE.Mesh) obj.rotation.z += 0.005;
+                if(obj instanceof THREE.Points) obj.rotation.z -= 0.002;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

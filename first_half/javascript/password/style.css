@@ -1,0 +1,22 @@
+.frame{
+    background-color: rgb(77, 69, 69);
+    border: 5px solid whitesmoke;
+    border-radius: 15px;
+    justify-content: center;
+    
+    color: whitesmoke;
+    padding: 50px 50px 50px 50px;
+    margin: 150px 150px;
+
+
+}
+
+.green{
+    color: greenyellow;
+    margin: none;
+}
+
+.btn{
+    padding: 5px;
+    background-color: greenyellow;
+}

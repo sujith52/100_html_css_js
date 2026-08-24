@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+/* Apply background to the whole page once */
+body {
+    background-image: url('./components/logo.png');
+    background-size: 900px;
+    background-repeat:no-repeat;
+    background-position-x: right;
+    background-position-y: 65% ;
+    
+    background-color: lightslategray;
+    margin: 0;
+    padding: 0;
+}
+
+/* Targets <header className="head"> */
+.head {
+    display: flex;
+    align-items: center; /* Vertical alignment */
+    flex-direction: row;
+    gap: 5px;
+    padding: 20px;
+    background-color: #2c3e50; /* Darker bar for contrast */
+}
+
+/* Targets <main className="body"> */
+.body h1 {
+    font-family: "Inter", sans-serif;
+    color: whitesmoke;
+    padding-left: 20px;
+    font-weight: 900;
+    font-size: 50px;
+}
+
+.list li {
+    font-family:Arial, Helvetica, sans-serif;
+    color: white;
+    text-shadow:#2c3e50 5px;
+    margin-bottom: 10px;
+    
+}
+
+/* Styles the bullet points */
+.list li::marker {
+    color: aqua;
+    font-size: 1.8rem;
+}
+
+.image {
+    width: 200px; /* Keeps your logo from being massive */
+}
+
+.facts{
+    font-size: 40px;
+    color: #09d9fe;
+    font-weight: 400;
+    font-family: "Inter";
+    
+}
+
+.list{
+    padding-left: 80px;
+    font-size: 25px;
+    margin-right: 25px;
+    
+}

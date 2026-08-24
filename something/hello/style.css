@@ -1,0 +1,37 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+h1{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: orange;
+    background-color: lightslategray;
+}
+
+.form{
+    font-size: 40px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    background-color:lightgray;
+    color: black;
+    gap: 10px;
+}
+.inpt{
+    height: 25px;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    
+    
+}
+#hibox{
+    width: 300px;
+    height: 100px;
+    font-size: 20px;
+
+}

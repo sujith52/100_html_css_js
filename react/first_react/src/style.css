@@ -1,0 +1,11 @@
+.flexe{
+    display: flex;
+    justify-content: space-between;
+
+}
+.navbar{
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+    list-style-type: none;
+}

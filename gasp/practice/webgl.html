@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced WebGL & React State Architecture</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --panel-bg: #0f172a;
+            --primary: #38bdf8;
+            --accent: #f43f5e;
+            --success: #22c55e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex;
+        }
+
+        /* LEFT SIDE: Simulated React DOM */
+        #react-dom-layer {
+            width: 35vw;
+            height: 100vh;
+            background: var(--panel-bg);
+            border-right: 1px solid #334155;
+            padding: 40px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            position: relative;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+
+        /* RIGHT SIDE: WebGL Canvas */
+        #webgl-layer {
+            width: 65vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* UI Styling */
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        h1 { margin: 0 0 10px 0; font-size: 24px; }
+        
+        .code-block {
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            color: #e2e8f0;
+            margin: 20px 0;
+            border: 1px solid #1e293b;
+        }
+
+        .highlight { color: var(--primary); }
+
+        .state-visualizer {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+            margin-top: 20px;
+        }
+
+        .count-display {
+            font-size: 64px;
+            font-weight: 900;
+            margin: 10px 0;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        button {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        button:hover { background: #7dd3fc; transform: translateY(-2px); }
+        button:active { transform: translateY(1px); }
+
+        /* The Animated Data Packet (The Bridge) */
+        #data-packet {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 50%;
+            left: 30vw;
+            opacity: 0;
+            z-index: 50;
+            box-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+            pointer-events: none;
+        }
+
+        /* Terminal Console */
+        #terminal {
+            margin-top: auto;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+        .log-time { color: var(--text-muted); }
+        .log-sys { color: var(--primary); }
+        .log-gpu { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div id="data-packet"></div>
+
+    <div id="react-dom-layer">
+        <span class="badge">DOM Thread (CPU)</span>
+        <h1>&lt;App /&gt;</h1>
+        
+        <div class="code-block">
+            <span class="highlight">const</span> [state, setState] = useState({<br>
+            &nbsp;&nbsp;count: <span id="code-count" class="highlight">0</span>,<br>
+            &nbsp;&nbsp;theme: 'slate'<br>
+            });
+        </div>
+
+        <div class="state-visualizer">
+            <div style="color: var(--text-muted); text-transform: uppercase; font-size: 12px; letter-spacing: 2px;">Current State</div>
+            <div class="count-display" id="ui-count">0</div>
+            <button id="trigger-btn">Dispatch setState()</button>
+        </div>
+
+        <div id="terminal">
+            <div><span class="log-time">[00:00:00]</span> <span class="log-sys">System Ready. React initialized.</span></div>
+            <div><span class="log-time">[00:00:00]</span> <span class="log-gpu">WebGL Context Mounted on GPU.</span></div>
+        </div>
+    </div>
+
+    <div id="webgl-layer">
+        </div>
+
+    <script>
+        // --- UTILS: Terminal Logger ---
+        const terminal = document.getElementById('terminal');
+        function log(msg, type = 'sys') {
+            const time = new Date().toTimeString().split(' ')[0];
+            const colorClass = type === 'gpu' ? 'log-gpu' : 'log-sys';
+            terminal.innerHTML += `<div><span class="log-time">[${time}]</span> <span class="${colorClass}">${msg}</span></div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // --- PART 1: THREE.JS ENGINE SETUP ---
+        const container = document.getElementById('webgl-layer');
+        const scene = new THREE.Scene();
+        
+        // Camera setup
+        const camera = new THREE.PerspectiveCamera(60, (window.innerWidth * 0.65) / window.innerHeight, 0.1, 1000);
+        camera.position.z = 6;
+
+        // Renderer setup with high-end settings
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth * 0.65, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Create a complex Torus Knot to represent the "Component"
+        const geometry = new THREE.TorusKnotGeometry(1.5, 0.4, 128, 32);
+        
+        // High-end physical material (looks like polished metal/glass)
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x334155, // Base slate color
+            metalness: 0.9,
+            roughness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            wireframe: true // Start as a wireframe structural concept
+        });
+
+        const coreMesh = new THREE.Mesh(geometry, material);
+        scene.add(coreMesh);
+
+        // Lighting is required for MeshPhysicalMaterial
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const mainLight = new THREE.PointLight(0x38bdf8, 5, 20); // Cyan light
+        mainLight.position.set(2, 5, 5);
+        scene.add(mainLight);
+
+        const accentLight = new THREE.PointLight(0xf43f5e, 5, 20); // Pink light
+        accentLight.position.set(-5, -5, -2);
+        scene.add(accentLight);
+
+        // Render Loop (60 FPS)
+        function animate() {
+            requestAnimationFrame(animate);
+            // Constant passive idle rotation
+            coreMesh.rotation.x += 0.003;
+            coreMesh.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+
+        // --- PART 2: THE REACT STATE ARCHITECTURE ---
+        let count = 0;
+        const stateColors = [0x38bdf8, 0x22c55e, 0xf43f5e, 0xa855f7, 0xfacc15]; // Cyan, Green, Pink, Purple, Yellow
+
+        document.getElementById('trigger-btn').addEventListener('click', () => {
+            // 1. Update DOM State (Instantaneous CPU operation)
+            count++;
+            document.getElementById('ui-count').innerText = count;
+            document.getElementById('code-count').innerText = count;
+            log(`setState({ count: ${count} }) called.`, 'sys');
+
+            // Determine new color for this state
+            const targetColorHex = stateColors[count % stateColors.length];
+            const targetColor = new THREE.Color(targetColorHex);
+            const cssColor = '#' + targetColor.getHexString();
+
+            // --- PART 3: THE GSAP CHOREOGRAPHY (The Bridge) ---
+            const tl = gsap.timeline();
+
+            // Step A: Animate the "Data Packet" shooting across the screen
+            log(`Virtual DOM reconciled. Dispatching payload to GPU...`, 'sys');
+            
+            tl.set("#data-packet", { 
+                opacity: 1, 
+                backgroundColor: cssColor,
+                boxShadow: `0 0 20px ${cssColor}, 0 0 40px ${cssColor}`,
+                x: 0, 
+                y: 0,
+                scale: 1
+            })
+            // Shoot across to the center of the right screen
+            .to("#data-packet", { 
+                x: window.innerWidth * 0.4, // Move 40% of the screen width to the right
+                duration: 0.6, 
+                ease: "power2.in" 
+            })
+            // Packet disappears upon impact
+            .to("#data-packet", { opacity: 0, scale: 3, duration: 0.1 })
+            
+            // Step B: The WebGL Object Reacts (GPU Operation)
+            .call(() => log(`Payload received. Re-rendering WebGL Geometry.`, 'gpu'))
+            
+            // Rapidly expand, turn solid, and change color
+            .to(coreMesh.scale, { x: 1.4, y: 1.4, z: 1.4, duration: 0.15, ease: "power2.out" }, "-=0.1")
+            .to(material, { wireframe: false, duration: 0.1 }, "<")
+            .to(material.color, { r: targetColor.r, g: targetColor.g, b: targetColor.b, duration: 0.3 }, "<")
+            
+            // Spin rapidly to show processing
+            .to(coreMesh.rotation, { 
+                y: coreMesh.rotation.y + Math.PI * 2, // Spin a full 360 degrees
+                duration: 1, 
+                ease: "power3.out" 
+            }, "<")
+
+            // Settle back to normal size
+            .to(coreMesh.scale, { x: 1, y: 1, z: 1, duration: 0.8, ease: "elastic.out(1, 0.4)" }, "-=0.6");
+        });
+
+        // Handle Resizing
+        window.addEventListener('resize', () => {
+            const newWidth = window.innerWidth * 0.65;
+            camera.aspect = newWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(newWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "wild-horizins",
+  "version": "1.0.0",
+  "description": "a dataset of a planet's most intresting places.",
+  
+  "keywords": [
+    "default"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "default"
+  },
+  "license": "ISC",
+  "author": "sujith_kumar_g",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "default",
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,36 @@
+.canav{
+    background-color: blue;
+    color: white;
+    text-align: center;
+    padding: 40px;
+    margin: 2px solid black;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 500px;
+    height: 700px;
+}
+
+#btn{
+    padding: 10px;
+    background-color: white;
+    color: black;
+    margin: 1px solid black;
+    font-size: 20px;
+    margin-bottom: 40px;
+}
+
+.bar{
+    background-color: white;
+    color: black;
+    border-radius: 15px;
+    padding: 10px 20px;
+    margin-bottom: 5px;
+}
+#value{
+    padding: 5px;
+    background-color: white;
+    width: 40px;
+    height: 40px;
+    margin-left: 225px;
+    color: black;
+    margin: 1px solid black;
+}
